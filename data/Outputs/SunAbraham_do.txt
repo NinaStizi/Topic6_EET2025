@@ -1,0 +1,26 @@
+
+\begin{table}
+\caption{Extension - Trend Break Estimates of the Effect of the NRCP on do.}
+\begin{center}
+\begin{tabular}{l c c c c c c}
+\hline
+ & Model 1 & Model 2 & Model 3 & Model 4 & Model 5 & Model 6 \\
+\hline
+time trend                          &          & $-0.02$  & $0.11^{***}$  &          & $-0.02$  & $0.10^{***}$  \\
+                                    &          & $(0.02)$ & $(0.03)$      &          & $(0.02)$ & $(0.03)$      \\
+1(policy)                           & $-0.03$  & $0.17$   & $-0.02$       & $-0.03$  & $0.18$   & $0.00$        \\
+                                    & $(0.11)$ & $(0.20)$ & $(0.13)$      & $(0.11)$ & $(0.18)$ & $(0.12)$      \\
+1(policy)*trend                     &          &          & $-0.15^{***}$ &          &          & $-0.14^{***}$ \\
+                                    &          &          & $(0.03)$      &          &          & $(0.03)$      \\
+\hline
+Num. obs.                           & $18$     & $18$     & $18$          & $18$     & $18$     & $18$          \\
+R$^2$                               & $0.01$   & $0.10$   & $0.68$        & $0.01$   & $0.12$   & $0.68$        \\
+Controls in first stage             & No       & No       & No            & Yes      & Yes      & Yes           \\
+Multi-way clustering in first stage & yes      & yes      & yes           & yes      & yes      & yes           \\
+Equation fitted                     & 2a       & 2b       & 2c            & 2a       & 2b       & 2c            \\
+\hline
+\multicolumn{7}{l}{\scriptsize{$^{***}p<0.01$; $^{**}p<0.05$; $^{*}p<0.1$. This table contains 2nd step regressions of our extension with Sun and Abraham method.}}
+\end{tabular}
+\label{table:coefficients}
+\end{center}
+\end{table}

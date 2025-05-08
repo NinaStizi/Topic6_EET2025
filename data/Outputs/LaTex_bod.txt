@@ -1,0 +1,26 @@
+
+\begin{table}
+\caption{Trend Break Estimates of the Effect of the NRCP on bod.}
+\begin{center}
+\begin{tabular}{l c c c c c c}
+\hline
+ & Model 1 & Model 2 & Model 3 & Model 4 & Model 5 & Model 6 \\
+\hline
+time trend                          &          & $-0.02$  & $-0.61$  &          & $-0.08$  & $-0.72^{*}$ \\
+                                    &          & $(0.14)$ & $(0.36)$ &          & $(0.17)$ & $(0.34)$    \\
+1(policy)                           & $-0.07$  & $0.10$   & $0.94$   & $-0.82$  & $-0.14$  & $0.82$      \\
+                                    & $(0.80)$ & $(1.40)$ & $(1.39)$ & $(0.95)$ & $(1.83)$ & $(1.71)$    \\
+1(policy)*trend                     &          &          & $0.67$   &          &          & $0.81^{*}$  \\
+                                    &          &          & $(0.38)$ &          &          & $(0.39)$    \\
+\hline
+Num. obs.                           & $18$     & $18$     & $18$     & $18$     & $18$     & $18$        \\
+R$^2$                               & $0.00$   & $0.00$   & $0.18$   & $0.04$   & $0.06$   & $0.28$      \\
+Controls in first stage             & No       & No       & No       & Yes      & Yes      & Yes         \\
+Multi-way clustering in first stage & yes      & yes      & yes      & yes      & yes      & yes         \\
+Equation fitted                     & 2a       & 2b       & 2c       & 2a       & 2b       & 2c          \\
+\hline
+\multicolumn{7}{l}{\scriptsize{$^{***}p<0.01$; $^{**}p<0.05$; $^{*}p<0.1$. COPY-PASTE note from paper please !}}
+\end{tabular}
+\label{table:coefficients}
+\end{center}
+\end{table}

@@ -1,0 +1,25 @@
+
+\begin{table}
+\caption{Paper reproduction:  Estimates of the Effect of the NRCP on lnfcoli.}
+\begin{center}
+\begin{tabular}{l c c c c c c}
+\hline
+ & fit 1 & fit 2 & fit 3 & fit 4 & fit 5 & fit 6 \\
+\hline
+time trend                &          & $0.01$   & $-0.08$  &          & $0.01$   & $-0.08$  \\
+                          &          & $(0.04)$ & $(0.08)$ &          & $(0.04)$ & $(0.08)$ \\
+1(policy)                 & $-0.08$  & $-0.14$  & $-0.01$  & $-0.08$  & $-0.14$  & $-0.01$  \\
+                          & $(0.20)$ & $(0.39)$ & $(0.40)$ & $(0.20)$ & $(0.39)$ & $(0.40)$ \\
+1(policy)*trend           &          &          & $0.11$   &          &          & $0.11$   \\
+                          &          &          & $(0.09)$ &          &          & $(0.09)$ \\
+\hline
+Num. obs.                 & $18$     & $18$     & $18$     & $18$     & $18$     & $18$     \\
+R$^2$                     & $0.01$   & $0.01$   & $0.10$   & $0.01$   & $0.01$   & $0.10$   \\
+Equation fitted           & 2a       & 2b       & 2c       & 2a       & 2b       & 2c       \\
+Coefficient and Se origin & R        & R        & R        & Stata    & Stata    & Stata    \\
+\hline
+\multicolumn{7}{l}{\scriptsize{$^{***}p<0.01$; $^{**}p<0.05$; $^{*}p<0.1$. Methodology}}
+\end{tabular}
+\label{table:coefficients}
+\end{center}
+\end{table}
