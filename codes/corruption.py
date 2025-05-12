@@ -4,18 +4,21 @@
  --
  Extensions of Hanna and Greenstone, American Economic Review, 2014
 
-    1. The role of corruption and other city characteristics
+    1. DiD Extension
+    2. DDD Design
+    3. Robustness Checks
 
 """
-#**********************************************************************************************#
-#**************** General SetUp : Environment, Working Directory, Packages ********************#
-#**********************************************************************************************#
+#***************************************#
+#********** GENERAL SET UP *************#
+#***************************************#
 
 # Packages
 import os  
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import statsmodels.formula.api as smf
 
 
 # Automating the setup of the right directory
@@ -24,49 +27,95 @@ mypath = os.path.join(os.path.dirname(script_dir))
 os.chdir(mypath)
 print(os.getcwd())
 
-#**********************************************************************************************#
-#**** The role of corruption and other city characteristics on the failure of NRCP policy *****#
-#**********************************************************************************************#
+#***************************************#
+#********** DATA CLEANING **************#
+#***************************************#
 
 # Data Loading and Cleaning
 cities_df = pd.read_stata("data/india_waters_cityyear.dta")
 
-cities_df = cities_df[["year", "river", "state", "city", "district", "nrcp", "bod", "fcoli", "lnfcoli", "do", "corruption_references", "pollution_references", "water_references", "corruption_score05", "corruption_level07", "top5_corrupt", "bottom5_corrupt" ]]
+cities_df = cities_df[["year", "river", "state", "city", "district", "nrcp", "bod", "fcoli", "lnfcoli", "do", "corruption_score05", "corruption_level07", "top5_corrupt", "bottom5_corrupt", "pop_urban", "lit_urban", 'povgap', 'total_industries']]
 
-# Dummy: Visual observation
-cities_per_corruptionlevel = cities_df.groupby(['year', 'corruption_level07'])[['bod', 'fcoli', 'lnfcoli', 'do']].mean()
+# First clean : 36 cities out of 425 are NAs, so we drop them
+cities_df = cities_df.dropna(how = 'all')
+cities_df = cities_df.reset_index(drop = True)
 
-corruption_levels_to_drop = [''] #droppting the undefined
-cities_per_corruptionlevel = cities_per_corruptionlevel[~cities_per_corruptionlevel.index.get_level_values('corruption_level07').isin(corruption_levels_to_drop)]
-
-## For BOD
-plt.figure(figsize=(10, 6))
-
-for corruption_level in cities_per_corruptionlevel.index.get_level_values('corruption_level07').unique():
-    filtered_data = cities_per_corruptionlevel.xs(corruption_level, level='corruption_level07')
-    plt.plot(filtered_data.index, filtered_data['bod'], label=f'{corruption_level}')
-
-plt.title('Evolution of BOD Over Time by Corruption Level')
-plt.xlabel('Year')
-plt.ylabel('Mean BOD')
-plt.legend(title='Corruption Level')
-plt.grid(True)
-
-plt.show()
-
-## For FColi
-plt.figure(figsize=(10, 6))
-
-for corruption_level in cities_per_corruptionlevel.index.get_level_values('corruption_level07').unique():
-    filtered_data = cities_per_corruptionlevel.xs(corruption_level, level='corruption_level07')
-    plt.plot(filtered_data.index, filtered_data['fcoli'], label=f'{corruption_level}')
-
-plt.title('Evolution of BOD Over Time by Corruption Level')
-plt.xlabel('Year')
-plt.ylabel('Mean BOD')
-plt.legend(title='Corruption Level')
-plt.grid(True)
-
-plt.show()
+# Since we will be working on corruption data, we drop the 11 cities out of 425 for which there are no corruption level / corruption scores
+cities_df = cities_df[~cities_df.corruption_level07.isin([''])]
 
 
+#***************************************#
+#*********** 1. DiD EXTENSION **********#
+#***************************************#
+
+#***************************************#
+#*********** 2. DDD DESIGN *************#
+#***************************************#
+
+# Creation of variables of interest for regression:
+
+cities_df['corruption'] = np.where(
+    (cities_df['corruption_level07'] == 'Moderate') & (cities_df['corruption_score05'] <= 480),
+    0,
+    1
+)
+
+cities_df["post"] = (cities_df["year"] >= 2000).astype(int)
+
+cities_df["city_fe"] = cities_df["city"]
+cities_df["year_fe"] = cities_df["year"].astype(str)  # 
+
+cities_df["nrcp_post"] = cities_df["nrcp"] * cities_df["post"]
+cities_df["nrcp_post_corruption"] = cities_df["nrcp_post"] * cities_df["corruption"]
+
+model_df = cities_df[[
+    'bod', 'do','fcoli', 'nrcp', 'post', 'corruption', 
+    'pop_urban', 'lit_urban', 'povgap', 'total_industries', 
+    'city'
+]].dropna()
+
+model_df['nrcp_post'] = model_df['nrcp'] * model_df['post']
+model_df['nrcp_post_corruption'] = model_df['nrcp_post'] * model_df['corruption']
+
+
+# BOD
+model_bod_ddd = smf.ols(
+    formula="""
+        bod ~ nrcp + post + corruption + nrcp:post + 
+        nrcp:corruption + post:corruption + 
+        nrcp_post_corruption + 
+        pop_urban + lit_urban + povgap + total_industries
+    """,
+    data=model_df
+).fit(cov_type='cluster', cov_kwds={'groups': model_df['city']})
+
+# DO
+model_do_ddd = smf.ols(
+    formula="""
+        do ~ nrcp + post + corruption + nrcp:post + 
+        nrcp:corruption + post:corruption + 
+        nrcp_post_corruption + 
+        pop_urban + lit_urban + povgap + total_industries
+    """,
+    data=model_df
+).fit(cov_type='cluster', cov_kwds={'groups': model_df['city']})
+
+# FColi
+model_fcoli_ddd = smf.ols(
+    formula="""
+        fcoli ~ nrcp + post + corruption + nrcp:post + 
+        nrcp:corruption + post:corruption + 
+        nrcp_post_corruption + 
+        pop_urban + lit_urban + povgap + total_industries
+    """,
+    data=model_df
+).fit(cov_type='cluster', cov_kwds={'groups': model_df['city']})
+
+# Printing the summaries
+print(model_bod_ddd.summary())
+print(model_do_ddd.summary())
+print(model_fcoli_ddd.summary())
+
+#***************************************#
+#********* 3. ROBUSTNESS CHECKS ********#
+#***************************************#
