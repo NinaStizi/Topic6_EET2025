@@ -159,7 +159,7 @@ for pollutant in pollutants:
     print(coef_table)
 
     table_latex = coef_table.to_latex()
-    with open(f"results/corruption/{pollutant}_corruption_effect_SunAbrhama.tex", "w") as f:
+    with open(f"results/corruption/{pollutant}_corruption_effect_SunAbraham.tex", "w") as f:
         f.write(table_latex)
 
     # Plots to shows marginal effect of corruption on pollution over time
